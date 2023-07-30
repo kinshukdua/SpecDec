@@ -49,7 +49,7 @@ def get_parsed_args():
 
 
 def run_og_model(args, processor_cls, model_cls, run_prediction_loop, queue):
-    tokenizer = processor_cls.from_pretrained(args.model, use_auth_token=True)
+    tokenizer = processor_cls.from_pretrained(args.model, use_auth_token=False)
 
     if args.max_gpu_memory is None:  # fails if it doesn't fit in a GPU
         max_memory = {0: "100GiB", "cpu": "0GiB"}
@@ -67,15 +67,15 @@ def run_og_model(args, processor_cls, model_cls, run_prediction_loop, queue):
         "load_in_8bit": args.load_in_8bit,
         "load_in_4bit": args.load_in_4bit,
     }
-    model = model_cls.from_pretrained(**model_kwargs, use_auth_token=True)
+    model = model_cls.from_pretrained(**model_kwargs, use_auth_token=False)
     og_outputs = run_prediction_loop(model, tokenizer, args.num_samples, args.temperature)
     queue.put(og_outputs)
 
 
 def run_new_model(args, processor_cls, model_cls, run_prediction_loop, queue):
-    tokenizer = processor_cls.from_pretrained(args.model, use_auth_token=True)
+    tokenizer = processor_cls.from_pretrained(args.model, use_auth_token=False)
 
-    aux_model = model_cls.from_pretrained(args.aux_model, use_auth_token=True)
+    aux_model = model_cls.from_pretrained(args.aux_model, use_auth_token=False)
     aux_model = aux_model.to(TORCH_DEVICE)
 
     if args.max_gpu_memory is None:  # fails if it doesn't fit in a GPU
