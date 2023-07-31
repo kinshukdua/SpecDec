@@ -72,7 +72,7 @@ def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
             # only add matched tokens
             current_tokens = torch.cat((current_tokens, selected_tokens[:,:n_matches+1]),dim=1)
 
-    return tokenizer.batch_decode(new_candidates), total_tokens, total_matches
+    return tokenizer.batch_decode(current_tokens), total_tokens, total_matches
 
 
 
