@@ -86,4 +86,5 @@ def main():
     print(output)
     print(f"{matches}/{total}")
 
-
+if __name__ == "__main__":
+    main()
