@@ -36,7 +36,7 @@ def get_next_tokens(model, new_candidates):
 def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
     total_tokens = 0
     total_matches = 0
-    candidate_count = 5
+    candidate_count = 10
     # Get inputs
     inputs = tokenizer(prompt, return_tensors='pt').to(device)
     current_tokens = inputs['input_ids']
@@ -78,5 +78,8 @@ def main():
     assistant_name = "facebook/opt-125m"
     model, assistant, tokenizer = init_models(model_name, assistant_name)
     prompt = "Hi!"
+    output, total, matches = speculative_loop(model, assistant, tokenizer, prompt, 50)
+    print(output)
+    print(f"{matches}/{total}")
 
 
