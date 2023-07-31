@@ -5,7 +5,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 def init_models(model_name: str, 
                       assistant_name:str) -> Tuple[AutoModelForCausalLM, AutoModelForCausalLM, AutoTokenizer]:
-
+    print("Initializing models")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
@@ -16,6 +16,7 @@ def init_models(model_name: str,
 
 
 def get_n_candidates(assistant, candidate_count, new_candidates):
+    print("Generating candidate tokens")
     for i in range(candidate_count):
         assistant_outputs = assistant(new_candidates)
         new_candidates = assistant_outputs.logits.argmax(-1)
@@ -27,6 +28,7 @@ def get_n_candidates(assistant, candidate_count, new_candidates):
     return new_candidates
 
 def get_next_tokens(model, new_candidates):
+    print("Generating batch tokens")
     model_outputs = model(new_candidates)
     next_tokens = model_outputs.logits.argmax(-1)
     return next_tokens
@@ -34,6 +36,7 @@ def get_next_tokens(model, new_candidates):
 
 
 def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
+    print("Starting speculative loop")
     total_tokens = 0
     total_matches = 0
     candidate_count = 10
@@ -74,6 +77,7 @@ def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
 
 
 def main():
+    print("Starting execution")
     model_name = "facebook/opt-1.3b"
     assistant_name = "facebook/opt-125m"
     model, assistant, tokenizer = init_models(model_name, assistant_name)
