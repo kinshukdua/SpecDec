@@ -46,7 +46,7 @@ def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
     inp_len = current_tokens.shape[-1]
     # Get candidate
     while current_tokens.shape[-1]-inp_len <= max_new_tokens:
-        new_candidates = current_tokens.detach.clone()
+        new_candidates = current_tokens.detach().clone()
         curr_len = current_tokens.shape[-1]
         new_candidates = get_n_candidates(assistant, candidate_count, new_candidates)
         next_tokens = get_next_tokens(model, new_candidates)
