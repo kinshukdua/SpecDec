@@ -19,10 +19,10 @@ def get_n_candidates(assistant, candidate_count, new_candidates):
     print("Generating candidate tokens")
     for i in range(candidate_count):
         assistant_outputs = assistant(new_candidates)
-        new_candidates = assistant_outputs.logits.argmax(-1)
+        output_tokens = assistant_outputs.logits.argmax(-1)
         new_candidates = torch.cat((new_candidates, 
-                                          new_candidates[:,-1:]),dim=1)
-        if torch.eq(new_candidates[:,-1:], assistant.generation_config.eos_token_id):
+                                          output_tokens[:,-1:]),dim=1)
+        if torch.eq(output_tokens[:,-1:], assistant.generation_config.eos_token_id):
             break
         # print(tokenizer.batch_decode(new_candidates[:,inp_len:]))
     return new_candidates
