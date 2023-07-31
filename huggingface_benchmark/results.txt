@@ -1,0 +1,32 @@
+Experiment 1 
+-------------
+Original Model: facebook/opt-2.7b
+Speculative Model: facebook/opt-125m
+Dataset: c4.en validation
++----------------+------------------+---------+------------------+
+| Original time  | Speculative time | Speedup | Mismatched tokens|
++----------------+------------------+---------+------------------+
+|     29.15      |       26.96      |   1.08  |       17         |
++----------------+------------------+---------+------------------+
+
+Experiment 2 
+-------------
+Original Model: facebook/opt-2.7b
+Speculative Model: facebook/opt-125m
+Dataset: c4.en validation
++----------------+------------------+---------+------------------+
+| Original time  | Speculative time | Speedup | Mismatched tokens|
++----------------+------------------+---------+------------------+
+|     33.19      |       28.15      |   1.18  |       17         |
++----------------+------------------+---------+------------------+
+
+Experiment 3 
+-------------
+Original Model: facebook/opt-6.7b
+Speculative Model: facebook/opt-125m
+Dataset: c4.en validation
++----------------+------------------+---------+------------------+
+| Original time  | Speculative time | Speedup | Mismatched tokens|
++----------------+------------------+---------+------------------+
+|     43.57      |      36.15       |  1.205  |        25        |
++----------------+------------------+---------+------------------+

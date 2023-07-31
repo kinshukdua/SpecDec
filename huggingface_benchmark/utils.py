@@ -57,7 +57,7 @@ def run_og_model(args, processor_cls, model_cls, run_prediction_loop, queue):
         max_memory = {}
         for i in range(len(args.max_gpu_memory)):
             max_memory[i] = str(args.max_gpu_memory[i])+"GiB"
-        max_memory["cpu"] = "50GiB"
+        max_memory["cpu"] = "12GiB"
     print(f"Max memory allocation: {max_memory}")
     model_kwargs = {
         "pretrained_model_name_or_path": args.model,
