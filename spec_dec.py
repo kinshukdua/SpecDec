@@ -13,7 +13,7 @@ def init_models(model_name: str,
 
     return model, assistant_model, tokenizer
 
-prompt = "My name is"
+
 
 def get_n_candidates(assistant, candidate_count, new_candidates):
     for i in range(candidate_count):
@@ -38,16 +38,18 @@ def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
     total_matches = 0
     candidate_count = 5
     # Get inputs
-    inputs = tokenizer(prompt,return_tensors='pt').to(device)
-    new_candidates = inputs['input_ids']
-    inp_len = new_candidates.shape[-1]
+    inputs = tokenizer(prompt, return_tensors='pt').to(device)
+    current_tokens = inputs['input_ids']
+    inp_len = current_tokens.shape[-1]
     # Get candidate
-    while new_candidates.shape[-1]-inp_len <= max_new_tokens:
+    while current_tokens.shape[-1]-inp_len <= max_new_tokens:
+        new_candidates = current_tokens.detach.clone()
+        curr_len = current_tokens.shape[-1]
         new_candidates = get_n_candidates(assistant, candidate_count, new_candidates)
         next_tokens = get_next_tokens(model, new_candidates)
         # slice out inputs
-        selected_tokens = next_tokens[:,inp_len-1:]
-        candidate_new_tokens = new_candidates[:,inp_len:]
+        selected_tokens = next_tokens[:,curr_len-1:]
+        candidate_new_tokens = new_candidates[:,curr_len:]
         # check for match
         n_matches = ((~(candidate_new_tokens == selected_tokens[:,:-1]))
                     .cumsum(dim=-1) < 1).sum()
@@ -65,9 +67,9 @@ def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
             if candidate_count > 1:
                 candidate_count -= 1 
             # only add matched tokens
-            new_candidates = torch.cat((new_candidates, candidate_new_tokens[:,:n_matches]),dim=1)
+            new_candidates = torch.cat((new_candidates, selected_tokens[:,:n_matches+1]),dim=1)
 
-    return tokenizer.batch_decode(new_candidates)
+    return tokenizer.batch_decode(new_candidates), total_tokens, total_matches
 
 
 
@@ -75,6 +77,6 @@ def main():
     model_name = "facebook/opt-1.3b"
     assistant_name = "facebook/opt-125m"
     model, assistant, tokenizer = init_models(model_name, assistant_name)
-    prompt = "A "
+    prompt = "Hi!"
 
 
