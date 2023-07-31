@@ -59,18 +59,17 @@ def speculative_loop(model, assistant, tokenizer, prompt, max_new_tokens):
         # if all candidates match
         total_tokens += candidate_count
         total_matches += n_matches
+        current_tokens = torch.cat((current_tokens, selected_tokens[:,:n_matches+1]),dim=1)
         if n_matches == candidate_count:
             # increase candidate count
             candidate_count += 2
             # add new og model token prediction to output
-            current_tokens = torch.cat((current_tokens, selected_tokens[:,-1:]),dim=1)
             if torch.eq(selected_tokens[:,-1:], assistant.generation_config.eos_token_id):
                 break
         else:
             if candidate_count > 1:
                 candidate_count -= 1 
-            # only add matched tokens
-            current_tokens = torch.cat((current_tokens, selected_tokens[:,:n_matches+1]),dim=1)
+            # only add matched tokens   
         print(tokenizer.batch_decode(current_tokens))
     return tokenizer.batch_decode(current_tokens), total_tokens, total_matches
 
